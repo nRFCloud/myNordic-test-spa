@@ -29,6 +29,28 @@ production app.
    `https://<tenant>.b2clogin.com/<tenant>.onmicrosoft.com/<policy>`. For Entra
    External ID (CIAM) tenants the authority is typically just
    `https://<tenant>.ciamlogin.com/`.
+5. **Token configuration → Optional claims → ID** — add `login_hint` for the nrfCloud
+   SPA client. MSAL uses this claim as `logout_hint` so CIAM can end the server
+   session without showing “Pick an account” (especially after myNordic portal SSO).
+6. **Authentication → Redirect URI** — register the SPA **logout** URL (e.g.
+   `http://localhost:8080/` or your nrfCloud origin) as a front-channel logout /
+   post-logout redirect URI, matching `postLogoutRedirectUri` in `msalConfig.js`.
+
+### Logout after myNordic portal SSO (nrfCloud)
+
+If users sign in on myNordic and land in nrfCloud via `login_hint` / silent SSO,
+then log out from nrfCloud and CIAM shows **“Pick an account”** with **no accounts
+listed**, the logout request did not identify the CIAM session. Typical causes:
+
+| Cause | Fix |
+| ----- | --- |
+| `logoutRedirect()` called with no `account` | Pass `msal.getAllAccounts()[0]` (or the active account). |
+| No `logout_hint` on the end-session URL | Pass `logoutHint` (email from myNordic `login_hint`, or `account.idTokenClaims.login_hint`). |
+| `login_hint` not in the ID token | Enable the optional claim on the **nrfCloud** app registration (see checklist item 5). |
+| Missing post-logout redirect | Set `postLogoutRedirectUri` in MSAL config and register it in Azure. |
+
+The `mynordic-oauth-test` harness persists `login_hint` from the portal redirect
+and sends it on logout. Mirror that in nrfCloud production code.
 
 ## 1 — Scaffold the test SPA
 

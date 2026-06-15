@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>nrfCloud</title>
+  </head>
+  <body>
+    <h1>nrfCloud — Silent SSO receiver</h1>
+    <p>
+      After myNordic CIAM login, users are redirected to
+      <code>/mynordic/from-portal?login_hint=…</code> where this app runs
+      <code>ssoSilent</code> with that <code>login_hint</code>.
+    </p>
+    <button id="login">Log in interactively</button>
+    <button id="logout" hidden>Log out</button>
+    <pre id="output">Not authenticated.</pre>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

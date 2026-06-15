@@ -43,8 +43,18 @@ document.getElementById("portal-login").addEventListener("click", () => {
   window.location.href = portalSignUpUrl.toString();
 });
 
-document.getElementById("logout").addEventListener("click", () => {
-  msal.logoutRedirect();
+document.getElementById("logout").addEventListener("click", async () => {
+  const account = msal.getAllAccounts()[0];
+  const logoutHint =
+    account?.idTokenClaims?.login_hint ?? account?.username ?? undefined;
+
+  const request = {
+    postLogoutRedirectUri: msalConfig.auth.postLogoutRedirectUri,
+  };
+  if (account) request.account = account;
+  if (logoutHint) request.logoutHint = logoutHint;
+
+  await msal.logoutRedirect(request);
 });
 
 init();
