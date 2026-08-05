@@ -239,3 +239,8 @@ This starts Vite automatically, runs the Playwright test suite against it, and
 shuts it down when finished. The test suite reads `TEST_USER_EMAIL` and
 `TEST_USER_PASSWORD` from the environment.
 
+
+## Node & NPM
+
+This project requires npm `>=12.0.2 <13` (enforced via `check-node-version` from
+the `prepare` script).
